@@ -1,0 +1,5 @@
+---
+
+inContainer: false
+splunkPassword: splunkAdminPassword
+inAWS: true

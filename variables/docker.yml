@@ -1,0 +1,5 @@
+---
+
+splunkRPMURL: "https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=7.2.5&product=splunk&filename=splunk-7.2.5-088f49762779-linux-2.6-x86_64.rpm&wget=true"
+inContainer: true
+inAWS: false

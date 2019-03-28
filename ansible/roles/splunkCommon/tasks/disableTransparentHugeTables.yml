@@ -1,0 +1,14 @@
+---
+
+- name: Copy Disable THP Service File Over
+  copy:
+    src: files/disable-thp.service
+    dest: /etc/systemd/system/disable-thp.service
+    owner: root
+    group: root
+    mode: 0744
+
+- name: Enable Disable THP Service
+  service:
+    name: disable-thp
+    enabled: yes

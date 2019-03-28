@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DATE=`date '+%Y-%m-%d %H:%M:'`
+
+aws s3 sync /opt/splunk/etc/ "s3://splunk-tst-config-backup-uaiso-bucket/$HOSTNAME/$DATE/" --include "*"

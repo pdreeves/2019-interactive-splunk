@@ -1,0 +1,26 @@
+---
+
+- name: Create Directory Splunk Backup Scripts Will Be In
+  file:
+    path: /opt/splunk/bin/backupScripts
+    owner: splunk
+    group: splunk
+    mode: 0700
+    state: directory
+
+- name: Configure Backup Script
+  template:
+    src: configBackup.sh.j2
+    dest: /opt/splunk/bin/backupScripts/configBackup.sh
+    owner: splunk
+    group: splunk
+    mode: 0744
+
+- name: Automate Backups
+  cron:
+    name: Backup Splunk Config
+    job: /opt/splunk//bin/backupScripts/configBackup.sh
+    minute: "25"
+    hour: "13,20,1"
+    weekday: "*"
+    user: splunk

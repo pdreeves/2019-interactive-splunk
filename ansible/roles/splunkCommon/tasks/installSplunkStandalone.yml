@@ -1,0 +1,57 @@
+---
+
+- name: Download Splunk Binary File
+  get_url:
+    url: "{{splunkRPMURL}}"
+    dest: /tmp/splunk.rpm
+
+- name: Install Splunk
+  yum:
+    name: /tmp/splunk.rpm
+    state: installed
+
+- name: Verify Splunk Binary File is Removed
+  file:
+    path: /tmp/splunk.rpm
+    state: absent
+
+- name: Set Environment Variable for Splunk Passwrod
+  set_fact:
+    splunkPassword="{{lookup('env', 'SPLUNK_ADMIN_PASSWORD')}}"
+
+- name: Configure Splunk user-seed.conf File
+  ini_file:
+    path: /opt/splunk/etc/system/default/user-seed.conf
+    owner: splunk
+    mode: 0700
+    section: user_info
+    option: USERNAME
+    value: admin
+  ini_file:
+    path: /opt/splunk/etc/system/default/user-seed.conf
+    owner: splunk
+    mode: 0700
+    section: user_info
+    option: PASSWORD
+    value: "{{lookup('env','SPLUNK_ADMIN_PASSWORD')}}"
+
+- name: Set Permissions on /opt/splunk
+  file:
+    name: /opt/splunk
+    recurse: yes
+    owner: splunk
+    group: splunk
+
+- name: Configure Optimistic File Locking
+  lineinfile:
+    path: /opt/splunk//etc/splunk-launch.conf
+    state: present
+    line: "OPTIMISTIC_ABOUT_FILE_LOCKING = 1"
+  when: inContainer == true
+
+- name: Start Splunk For First Time
+  become_user: splunk
+  command: /opt/splunk/bin/splunk start --accept-license
+
+- name: Enable Splunk to Start on Boot
+  command: /opt/splunk/bin/splunk enable boot-start -user splunk

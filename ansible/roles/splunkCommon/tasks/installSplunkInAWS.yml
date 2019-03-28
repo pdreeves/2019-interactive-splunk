@@ -1,0 +1,54 @@
+---
+
+- name: Install Splunk
+  yum:
+    name: "/home/ec2-user/files/common/{{splunkRPMName}}"
+    state: installed
+
+- name: Verify Splunk Binary File is Removed
+  file:
+    path: "/home/ec2-user/files/common/{{splunkRPMName}}"
+    state: absent
+
+- name: Configure Splunk user-seed.conf File
+  ini_file:
+    path: /opt/splunk/etc/system/default/user-seed.conf
+    owner: splunk
+    mode: 0700
+    section: user_info
+    option: USERNAME
+    value: admin
+  ini_file:
+    path: /opt/splunk/etc/system/default/user-seed.conf
+    owner: splunk
+    mode: 0700
+    section: user_info
+    option: PASSWORD
+    value: "{{lookup('env','SPLUNK_ADMIN_PASSWORD')}}"
+
+- name: Set Permissions on /opt/splunk
+  file:
+    name: /opt/splunk
+    recurse: yes
+    owner: splunk
+    group: splunk
+
+- name: Start Splunk For First Time
+  become_user: splunk
+  command: /opt/splunk/bin/splunk start --accept-license
+
+- name: Stop Splunk
+  become_user: splunk
+  command: /opt/splunk/bin/splunk stop
+
+- name: Enable Splunk to Start on Boot
+  command: /opt/splunk/bin/splunk enable boot-start -user splunk
+
+- name: Configure base server.conf
+  blockinfile:
+    path: /opt/splunk/etc/system/local/server.conf
+    block: |
+
+      [general]
+      site = {{lookup('env','SPLUNK_SITE')}}
+      serverName = {{lookup('env','INSTANCE_NAME')}}

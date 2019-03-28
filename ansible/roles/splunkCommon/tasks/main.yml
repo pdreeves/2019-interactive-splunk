@@ -1,0 +1,12 @@
+---
+
+- import_tasks: disableTransparentHugeTables.yml
+  when: inContainer == false
+- import_tasks: setUlimits.yml
+  when: inContainer == false
+- import_tasks: installSplunkInAWS.yml
+  when: inAWS == true
+- import_tasks: installSplunkStandalone.yml
+  when: inAWS == false
+- import_tasks: configureConfigBackups.yml
+  when: inAWS == true

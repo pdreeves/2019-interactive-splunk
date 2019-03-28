@@ -1,0 +1,22 @@
+---
+
+- name: Set limits on number of open files
+  pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: nofile
+    value: 64000
+
+- name: Configure number of user processes
+  pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: nproc
+    value: 16000
+
+- name: Configure data segment size
+  pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: data
+    value: 1073741824
