@@ -1,0 +1,40 @@
+---
+
+- name: Create Splunk Cluster inputs.conf file
+  file:
+    path: /opt/splunk/etc/system/local/inputs.conf
+    owner: splunk
+    group: splunk
+    mode: 0744
+    state: touch
+
+- name: Configure Splunk inputs.conf file
+  blockinfile:
+    path: /opt/splunk/etc/system/local/inputs.conf
+    block: |
+      [splunktcp://9997]
+      disabled = 0
+
+- name: Create Splunk Cluster indexes.conf file
+  file:
+    path: /opt/splunk/etc/system/local/indexes.conf
+    owner: splunk
+    group: splunk
+    mode: 0744
+    state: touch
+
+- name: Configure Splunk indexes.conf file
+  blockinfile:
+    path: /opt/splunk/etc/system/local/indexes.conf
+    block: |
+      [linux]
+      homePath   = $SPLUNK_DB/linux/db
+      coldPath   = $SPLUNK_DB/linux/colddb
+      thawedPath = $SPLUNK_DB/linux/thaweddb
+      tstatsHomePath = volume:_splunk_summaries/linux/datamodel_summary
+
+      [web]
+      homePath   = $SPLUNK_DB/web/db
+      coldPath   = $SPLUNK_DB/web/colddb
+      thawedPath = $SPLUNK_DB/web/thaweddb
+      tstatsHomePath = volume:_splunk_summaries/web/datamodel_summary
