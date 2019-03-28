@@ -29,7 +29,7 @@ docker container exec --tty --interactive splunk-docker /bin/bash
 
 # Container Build Commands
 ## Build image
-docker image build . --file Dockerfile --tag splunk-docker
+docker image build . --file Dockerfile --tag 2019-interactive-splunk
 
 ## Start and run container
 docker container run --detach --name splunk-docker --interactive --tty --publish 8000:8000 --env SPLUNK_PASSWORD="newSplunkPassword" splunk-docker
